@@ -19,9 +19,6 @@
         <email>contact@informatiqueprog.net</email>
     </author>
     <type>delivery</type>
-    <required>
-        <module version="&gt;=1.0.1">ZipCode</module>
-    </required>
     <thelia>2.3.0</thelia>
     <stability>prod</stability>
 </module>
