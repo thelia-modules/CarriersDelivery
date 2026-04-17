@@ -123,7 +123,7 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
     /**
      * @return bool
      */
-    public function handleVirtualProductDelivery()
+    public function handleVirtualProductDelivery(): bool
     {
         return true;
     }
