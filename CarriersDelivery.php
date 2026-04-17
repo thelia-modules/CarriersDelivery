@@ -105,7 +105,7 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
      * @throws DeliveryException
      * @return float
      */
-    public function getPostage(Country $country)
+    public function getPostage(Country $country): \Thelia\Model\OrderPostage|float
     {
         $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
@@ -132,7 +132,7 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
      * @param Country $country
      * @return bool
      */
-    public function isValidDelivery(Country $country)
+    public function isValidDelivery(Country $country): bool
     {
         $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
