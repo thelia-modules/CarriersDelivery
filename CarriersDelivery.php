@@ -82,7 +82,7 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
     /**
      * @param ConnectionInterface|null $con
      */
-    public function postActivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null): void
     {
         try {
             if (null === self::getConfigValue(self::CONFIG_TRACKING_URL, null)) {
