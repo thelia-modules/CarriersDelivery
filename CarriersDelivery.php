@@ -325,7 +325,7 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
     /**
      * @return mixed
      */
-    public static function getModuleId()
+    public static function getModuleId(): int
     {
         $module = ModuleQuery::create()->findOneByCode('CarriersDelivery');
 
