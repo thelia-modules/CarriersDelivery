@@ -19,7 +19,7 @@ class DepartmentType extends AbstractType
      *
      * @return string The name of this type
      */
-    public function getName()
+    public function getName(): string
     {
         return 'department';
     }

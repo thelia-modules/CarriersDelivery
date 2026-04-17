@@ -22,7 +22,6 @@ use Thelia\Core\Translation\Translator;
 
 class CarriersDeliveryListener implements EventSubscriberInterface
 {
-    protected $translator;
 
     protected $requestStack;
 

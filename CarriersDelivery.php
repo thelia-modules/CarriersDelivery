@@ -19,7 +19,7 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Translation\Translator;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
 use Thelia\Log\Tlog;
 use Thelia\Model\Address;
 use Thelia\Model\AddressQuery;

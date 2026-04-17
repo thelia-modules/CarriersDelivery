@@ -14,7 +14,7 @@ class AreaEditForm extends AreaCreateForm
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'carriersdelivery_area_edit';
     }

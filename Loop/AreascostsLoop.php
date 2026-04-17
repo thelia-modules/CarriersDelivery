@@ -21,7 +21,7 @@ class AreascostsLoop extends BaseLoop implements PropelSearchLoopInterface
     /**
      * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): \Thelia\Core\Template\Loop\Argument\ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntListTypeArgument('id'),
@@ -37,7 +37,7 @@ class AreascostsLoop extends BaseLoop implements PropelSearchLoopInterface
     /**
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): \Propel\Runtime\ActiveQuery\ModelCriteria
     {
         $search = CarriersdeliveryAreascostsQuery::create();
 
@@ -80,7 +80,7 @@ class AreascostsLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         foreach ($loopResult->getResultDataCollection() as $row) {
             $loopResultRow = new LoopResultRow($row);

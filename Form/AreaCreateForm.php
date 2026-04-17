@@ -17,7 +17,7 @@ class AreaCreateForm extends BaseForm
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'carriersdelivery_area_create';
     }

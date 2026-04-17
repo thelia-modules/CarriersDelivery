@@ -17,7 +17,7 @@ class AreacostCreateForm extends BaseForm
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'carriersdelivery_areacost_create';
     }
