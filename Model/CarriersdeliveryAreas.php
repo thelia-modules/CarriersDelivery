@@ -11,7 +11,7 @@ class CarriersdeliveryAreas extends BaseCarriersdeliveryAreas
      * @param ConnectionInterface|null $con
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function postInsert(ConnectionInterface $con = null)
+    public function postInsert(?ConnectionInterface $con = null): void
     {
         $costsByWeight = CarriersdeliveryAreascostsQuery::getCostsByWeightForCarrier($this->getCarrierId());
 
