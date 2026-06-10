@@ -1,0 +1,19 @@
+{% set menu_active = menu_active|default('') %}
+<div class="row pb-3">
+    <div class="col-md-5">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin.home') }}">{{ 'Home'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin.module') }}">{{ 'Modules'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('carriersdelivery.admin.carriers') }}">{{ 'CarriersDelivery'|trans({}, 'carriersdelivery.bo.default') }}</a></li>
+        </ul>
+        <div class="alert alert-warning text-center" style="max-width: 250px;">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ 'All prices are without taxes!'|trans({}, 'carriersdelivery.bo.default') }}
+        </div>
+    </div>
+    <div class="col-md-7">
+        <a class="btn btn-lg {{ menu_active == 'config' ? 'btn-primary' : 'btn-secondary' }}" href="{{ path('carriersdelivery.admin.config') }}">{{ 'Configuration'|trans }}</a>
+        <a class="btn btn-lg {{ menu_active == 'carriers' ? 'btn-primary' : 'btn-secondary' }}" href="{{ path('carriersdelivery.admin.carriers') }}">{{ 'Carriers list'|trans({}, 'carriersdelivery.bo.default') }}</a>
+        <a class="btn btn-lg {{ menu_active == 'packingcosts' ? 'btn-primary' : 'btn-secondary' }}" href="{{ path('carriersdelivery.admin.packingcosts') }}">{{ 'Packing costs list'|trans({}, 'carriersdelivery.bo.default') }}</a>
+    </div>
+</div>

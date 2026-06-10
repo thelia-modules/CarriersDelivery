@@ -1,0 +1,15 @@
+{% for carrier_order in carrier_orders %}
+    <dl class="row">
+        <dt class="col-sm-3">&nbsp;</dt>
+        <dd class="col-sm-9">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#carriersdelivery_order_collapse" aria-expanded="false" aria-controls="carriersdelivery_order_collapse">
+                {{ 'Details'|trans({}, 'carriersdelivery.bo.default') }}
+            </button>
+        </dd>
+    </dl>
+    <div class="collapse" id="carriersdelivery_order_collapse">
+        <div class="card card-body">
+            <pre>{{ carrier_order.postage_log }}</pre>
+        </div>
+    </div>
+{% endfor %}

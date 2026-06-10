@@ -12,6 +12,7 @@ use CarriersDelivery\CarriersDelivery;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
+use Thelia\Model\TaxRuleQuery;
 
 class ConfigController extends BaseAdminController
 {
@@ -44,7 +45,26 @@ class ConfigController extends BaseAdminController
             $this->setupFormErrorContext(get_class($form), $e->getMessage(), $form, $e);
         }
 
-        return $this->render('carriersdelivery-config');
+        $locale = $this->getRequest()->getSession()->getLang()->getLocale();
+
+        $taxRules = [];
+        $taxRuleList = TaxRuleQuery::create()->orderById()->find();
+
+        foreach ($taxRuleList as $taxRule) {
+            $taxRule->setLocale($locale);
+            $taxRules[] = [
+                'id' => $taxRule->getId(),
+                'title' => $taxRule->getTitle(),
+            ];
+        }
+
+        $config = CarriersDelivery::getConfig();
+
+        return $this->render('carriersdelivery-config', [
+            'config_form' => $form->getForm()->createView(),
+            'tax_rules' => $taxRules,
+            'current_tax' => $config['tax'],
+        ]);
     }
 
 }

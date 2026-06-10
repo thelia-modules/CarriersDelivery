@@ -7,37 +7,62 @@
 
 namespace CarriersDelivery\Hook;
 
-
+use CarriersDelivery\Model\CarriersdeliveryOrderQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Hook\BaseHook;
 
 class BackHook extends BaseHook
 {
-    /**
-     * @param HookRenderEvent $event
-     */
-    public function onProductModificationFormRightBottom(HookRenderEvent $event)
+    public static function getSubscribedHooks(): array
+    {
+        return [
+            'order-edit.delivery-module-bottom' => [
+                ['type' => 'back', 'method' => 'onOrderEditDeliveryModuleBottom'],
+            ],
+            'product.modification.form-right.bottom' => [
+                ['type' => 'back', 'method' => 'onProductModificationFormRightBottom'],
+            ],
+        ];
+    }
+
+    public function onProductModificationFormRightBottom(HookRenderEvent $event): void
     {
         $event->add(
             $this->render(
-                'carriersdelivery-product.modification.form-right.bottom.html',
+                'CarriersDelivery/carriersdelivery-product.modification.form-right.bottom.html.twig',
                 [
-                    'form'          => $event->getArgument('form'),
-                    'product_id'    => $event->getArgument('product_id')
+                    'form' => $event->getArgument('form'),
+                    'product_id' => $event->getArgument('product_id'),
                 ]
             )
         );
     }
-    /**
-     * @param HookRenderEvent $event
-     */
-    public function onOrderEditDeliveryModuleBottom(HookRenderEvent $event)
+
+    public function onOrderEditDeliveryModuleBottom(HookRenderEvent $event): void
     {
+        $orderId = $event->getArgument('order_id');
+
+        $orders = CarriersdeliveryOrderQuery::create()
+            ->filterByOrderId($orderId, Criteria::IN)
+            ->orderByOrderId(Criteria::ASC)
+            ->find();
+
+        $carrierOrders = [];
+
+        foreach ($orders as $order) {
+            $carrierOrders[] = [
+                'order_id' => $order->getOrderId(),
+                'postage_log' => $order->getPostageLog(),
+            ];
+        }
+
         $event->add(
             $this->render(
-                'carriersdelivery-order-edit.delivery-module-bottom.html',
+                'CarriersDelivery/carriersdelivery-order-edit.delivery-module-bottom.html.twig',
                 [
-                    'order_id' => $event->getArgument('order_id')
+                    'order_id' => $orderId,
+                    'carrier_orders' => $carrierOrders,
                 ]
             )
         );

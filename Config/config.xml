@@ -2,23 +2,6 @@
 <config xmlns="http://thelia.net/schema/dic/config"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
-    <forms>
-        <form name="carriersdelivery_config" class="CarriersDelivery\Form\ConfigForm"/>
-        <form name="carriersdelivery_area_create" class="CarriersDelivery\Form\AreaCreateForm"/>
-        <form name="carriersdelivery_area_edit" class="CarriersDelivery\Form\AreaEditForm"/>
-        <form name="carriersdelivery_areacost_create" class="CarriersDelivery\Form\AreacostCreateForm"/>
-        <form name="carriersdelivery_areacostkg_create" class="CarriersDelivery\Form\AreacostkgCreateForm"/>
-        <form name="carriersdelivery_carrier_create" class="CarriersDelivery\Form\CarrierCreateForm"/>
-        <form name="carriersdelivery_carrier_edit" class="CarriersDelivery\Form\CarrierEditForm"/>
-        <form name="carriersdelivery_packingcost_create" class="CarriersDelivery\Form\PackingcostCreateForm"/>
-        <form name="carriersdelivery_packingcost_edit" class="CarriersDelivery\Form\PackingcostEditForm"/>
-    </forms>
-    <hooks>
-        <hook id="carriersdelivery.hook.back" class="CarriersDelivery\Hook\BackHook" scope="request">
-            <tag name="hook.event_listener" event="order-edit.delivery-module-bottom" type="back"/>
-            <tag name="hook.event_listener" event="product.modification.form-right.bottom" type="back"/>
-        </hook>
-    </hooks>
     <loops>
         <loop class="CarriersDelivery\Loop\AreasLoop" name="carriersdelivery_areas"/>
         <loop class="CarriersDelivery\Loop\AreascostsLoop" name="carriersdelivery_areascosts"/>

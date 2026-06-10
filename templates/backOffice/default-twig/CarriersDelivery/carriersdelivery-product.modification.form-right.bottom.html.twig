@@ -1,0 +1,14 @@
+{% if form is defined and form.carrier_id is defined %}
+    <div class="card card-body">
+        <div class="mb-3 form-group-carrier">
+            {{ form_label(form.carrier_id) }}
+            {{ form_errors(form.carrier_id) }}
+            {% for child in form.carrier_id %}
+                <div class="form-check">
+                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

@@ -33,6 +33,7 @@ use Thelia\Model\TaxRuleQuery;
 use Thelia\Module\BaseModule;
 use Thelia\Module\DeliveryModuleInterface;
 use Thelia\Module\Exception\DeliveryException;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\TaxEngine\Calculator;
 use Thelia\Tools\I18n;
 use ZipCode\ZipCode;
@@ -47,6 +48,13 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
     const DEFAULT_TAX_RULE_ID = 0;
 
     protected $logIsActive = true;
+
+    public static function configureServices(ServicesConfigurator $services): void
+    {
+        $services->load(self::getModuleCode().'\\Hook\\', __DIR__.'/Hook')
+            ->autowire(true)
+            ->autoconfigure(true);
+    }
 
     /**
      * @param $infos

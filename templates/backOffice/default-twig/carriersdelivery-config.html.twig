@@ -1,0 +1,46 @@
+{% extends '@BackOfficeDefaultTwig/base.html.twig' %}
+
+{% block title %}{{ 'CarriersDelivery'|trans({}, 'carriersdelivery.bo.default') }}{% endblock %}
+
+{% block content %}
+    <div class="carriersdelivery">
+        <div id="wrapper" class="container">
+            {% include '@CarriersDeliveryModule/backOffice/default-twig/CarriersDelivery/includes/carriersdelivery-menu.html.twig' with {'menu_active': 'config'} %}
+
+            <div class="card">
+                <div class="card-body">
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <h1 class="h4 mb-3">{{ 'Configuration'|trans }}</h1>
+
+                    {% set form_name = config_form.vars.full_name %}
+                    <form method="POST" action="{{ path('carriersdelivery.admin.config') }}">
+                        <input type="hidden" name="{{ config_form._token.vars.full_name }}" value="{{ config_form._token.vars.value }}">
+                        <input type="hidden" name="{{ form_name }}[success_url]" value="{{ path('carriersdelivery.admin.carriers') }}">
+
+                        <div style="max-width: 900px; margin: 0 auto;">
+                            <div class="mb-3">
+                                <label for="carriersdelivery_config_tax" class="form-label">{{ 'Tax rule'|trans({}, 'carriersdelivery.bo.default') }} :</label>
+                                <select id="carriersdelivery_config_tax" name="{{ form_name }}[tax]" class="form-select">
+                                    <option value="0"{{ current_tax == 0 ? ' selected="selected"' : '' }}>{{ 'No taxes'|trans({}, 'carriersdelivery.bo.default') }}</option>
+                                    {% for tax_rule in tax_rules %}
+                                        <option value="{{ tax_rule.id }}"{{ current_tax == tax_rule.id ? ' selected="selected"' : '' }}>{{ tax_rule.id }}: {{ tax_rule.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a class="btn btn-secondary" href="{{ path('carriersdelivery.admin.carriers') }}">{{ 'Close'|trans }}</a>
+                                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'Save'|trans }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
