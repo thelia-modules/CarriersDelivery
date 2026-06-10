@@ -8,11 +8,14 @@
 namespace CarriersDelivery\Controller\Back;
 
 
+use CarriersDelivery\Form\PackingcostCreateForm;
+use CarriersDelivery\Form\PackingcostEditForm;
 use CarriersDelivery\Model\CarriersdeliveryPackingcosts;
 use CarriersDelivery\Model\CarriersdeliveryPackingcostsQuery;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
+use Thelia\Model\Currency;
 
 class PackingcostController extends BaseAdminController
 {
@@ -42,7 +45,27 @@ class PackingcostController extends BaseAdminController
             return $response;
         }
 
-        return $this->render('carriersdelivery-packingcosts-list');
+        $createForm = $this->createForm(PackingcostCreateForm::getName());
+        $editForm = $this->createForm(PackingcostEditForm::getName());
+
+        $packingcosts = CarriersdeliveryPackingcostsQuery::create()->orderByWeightMax()->find();
+        $packingcostRows = [];
+        foreach ($packingcosts as $pc) {
+            $packingcostRows[] = [
+                'id' => $pc->getId(),
+                'weight_max' => (float) $pc->getWeightMax(),
+                'cost' => (float) $pc->getCost(),
+            ];
+        }
+
+        $currencySymbol = Currency::getDefaultCurrency()?->getSymbol() ?? '';
+
+        return $this->render('carriersdelivery-packingcosts-list', [
+            'packingcosts' => $packingcostRows,
+            'currency_symbol' => $currencySymbol,
+            'create_form' => $createForm->getForm()->createView(),
+            'edit_form' => $editForm->getForm()->createView(),
+        ]);
     }
 
     /**

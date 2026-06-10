@@ -1,0 +1,551 @@
+{% extends '@BackOfficeDefaultTwig/base.html.twig' %}
+
+{% block title %}{{ 'CarriersDelivery'|trans({}, 'carriersdelivery.bo.default') }}{% endblock %}
+
+{% block content %}
+    <style>
+        #wrapper div.alert { white-space: pre; }
+        #wrapper .card-header { font-size: 18px; }
+        #formGetPrice .mb-3 { margin-right: 10px; }
+        #formGetPrice .reminder-group { padding-bottom: 10px; }
+        #formGetPrice .form-control.small-input { max-width: 80px; }
+        table.table-areacost th span { font-size: 0.8em; }
+        table.table-areacost td input { font-size: 11px; max-width: 60px; text-align: center; }
+    </style>
+
+    <div class="carriersdelivery">
+        <div id="wrapper" class="container">
+            {% include '@CarriersDeliveryModule/backOffice/default-twig/CarriersDelivery/includes/carriersdelivery-menu.html.twig' with {'menu_active': 'carriers'} %}
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="h4 mb-0">{{ 'Carrier\'s areas (%name)'|trans({'%name': carrier_name}, 'carriersdelivery.bo.default') }}</h1>
+                        {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                            <button type="button" class="btn btn-primary btn-sm flex-shrink-0" data-bs-toggle="modal" data-bs-target="#carriersdelivery-area-create-modal">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            {% if carrier_areas|length %}
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'ID'|trans }}</th>
+                                        <th>{{ 'Name'|trans }}</th>
+                                        <th>{{ 'Departments'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        <th class="text-end">{{ 'Actions'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for area_id, area_name in carrier_areas %}
+                                        <tr>
+                                            <td>{{ area_id }}</td>
+                                            <td class="object-title">
+                                                <a href="{{ path('carriersdelivery.admin.area.edit', {id: area_id}) }}">{{ area_name }}</a>
+                                            </td>
+                                            <td></td>
+                                            <td class="text-end">
+                                                <div class="btn-group">
+                                                    {% if is_granted('UPDATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                        <a class="btn btn-secondary btn-sm" href="{{ path('carriersdelivery.admin.area.edit', {id: area_id}) }}">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#carriersdelivery-area-delete-modal"
+                                                                data-area-id="{{ area_id }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            {% else %}
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="4">
+                                            <div class="alert alert-info mb-0">
+                                                {{ 'There is no results.'|trans({}, 'carriersdelivery.bo.default') }}
+                                                {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                    {{ 'To create a new one, click the + button above.'|trans({}, 'carriersdelivery.bo.default') }}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+
+                    {# Price calculator #}
+                    <div class="card card-body bg-light mb-3">
+                        <div class="d-flex flex-wrap align-items-end gap-2 reminder-group">
+                            <span>{{ 'Diesel tax'|trans({}, 'carriersdelivery.bo.default') }}</span>
+                            <input class="form-control small-input"
+                                   type="text"
+                                   placeholder="{{ carrier_diesel_tax == 0 ? '-' : carrier_diesel_tax|number_format(3, '.', ' ') ~ ' %' }}"
+                                   readonly>
+                            <span>{{ 'Fees cost'|trans({}, 'carriersdelivery.bo.default') }}</span>
+                            <input class="form-control small-input"
+                                   type="text"
+                                   placeholder="{{ carrier_fees_cost == 0 ? '-' : carrier_fees_cost|number_format(2, '.', ' ') }}"
+                                   readonly>
+                        </div>
+                        <form class="d-flex flex-wrap align-items-end gap-2" id="formGetPrice"
+                              action="{{ path('carriersdelivery.admin.area.price') }}" method="POST">
+                            <div>
+                                <label for="formGetPriceArea" class="form-label">{{ 'Choose a area'|trans({}, 'carriersdelivery.bo.default') }}</label>
+                                <select name="area_id" id="formGetPriceArea" class="form-select">
+                                    {% for area_id, area_name in carrier_areas %}
+                                        <option value="{{ area_id }}">{{ area_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="formGetPriceWeight" class="form-label">{{ 'Package weight'|trans({}, 'carriersdelivery.bo.default') }} (kg)</label>
+                                <input type="text" class="form-control small-input" id="formGetPriceWeight" name="weight" value="10">
+                            </div>
+                            <button type="submit" class="btn btn-primary">{{ 'Get Price'|trans({}, 'carriersdelivery.bo.default') }}</button>
+                        </form>
+                    </div>
+
+                    {# Cost by area table #}
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            {{ 'Cost by area'|trans({}, 'carriersdelivery.bo.default') }}
+                            {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carriersdelivery-areacost-create-modal">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm table-areacost" id="areascosts">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'Areas'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        {% for weightCol in costDistinctWeights %}
+                                            <th class="text-center">{{ 'Up to'|trans({}, 'carriersdelivery.bo.default') }}<br>{{ weightCol|number_format(0) }}<span> (kg)</span></th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for area_id, area_name in carrier_areas %}
+                                        <tr class="slice" data-area-id="{{ area_id }}">
+                                            <td class="object-title">{{ area_name }}</td>
+                                            {% for weightCol in costDistinctWeights %}
+                                                <td data-id="{{ costAreasWeights[area_id][weightCol]['id']|default('') }}" class="text-center">
+                                                    <input type="text" name="weight_cost"
+                                                           class="form-control form-control-sm"
+                                                           value="{{ costAreasWeights[area_id][weightCol]['cost']|default(0)|number_format(2, '.', ' ') }}">
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>
+                                            {% if is_granted('UPDATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                <button type="button"
+                                                        class="btn btn-primary btn-sm areacost-update d-none"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#carriersdelivery-areascosts-update-modal">
+                                                    {{ 'Save'|trans }} <i class="bi bi-floppy"></i>
+                                                </button>
+                                            {% endif %}
+                                        </th>
+                                        {% for weightCol in costDistinctWeights %}
+                                            <th class="text-center">
+                                                {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                    <button type="button"
+                                                            class="btn btn-secondary btn-sm areacost-delete"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#carriersdelivery-areacost-delete-modal"
+                                                            data-weight="{{ weightCol }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    {# Cost per Kg table #}
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            {{ 'Cost for %nbr Kg by area'|trans({'%nbr': carrier_unit_per_kg}, 'carriersdelivery.bo.default') }}
+                            {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carriersdelivery-areacostkg-create-modal">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm table-areacost" id="areascostskg">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'Areas'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        {% for weightCol in costkgDistinctWeights %}
+                                            <th class="text-center">{{ 'Up to'|trans({}, 'carriersdelivery.bo.default') }}<br>{{ weightCol|number_format(0) }}<span> (kg)</span></th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for area_id, area_name in carrier_areas %}
+                                        <tr class="slice" data-area-id="{{ area_id }}">
+                                            <td class="object-title">{{ area_name }}</td>
+                                            {% for weightCol in costkgDistinctWeights %}
+                                                <td data-id="{{ costkgAreasWeights[area_id][weightCol]['id']|default('') }}" class="text-center">
+                                                    <input type="text" name="weight_cost"
+                                                           class="form-control form-control-sm"
+                                                           value="{{ costkgAreasWeights[area_id][weightCol]['cost']|default(0)|number_format(2, '.', ' ') }}">
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>
+                                            {% if is_granted('UPDATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                <button type="button"
+                                                        class="btn btn-primary btn-sm areacostkg-update d-none"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#carriersdelivery-areascostskg-update-modal">
+                                                    {{ 'Save'|trans }} <i class="bi bi-floppy"></i>
+                                                </button>
+                                            {% endif %}
+                                        </th>
+                                        {% for weightCol in costkgDistinctWeights %}
+                                            <th class="text-center">
+                                                {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                    <button type="button"
+                                                            class="btn btn-secondary btn-sm areacostkg-delete"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#carriersdelivery-areacostkg-delete-modal"
+                                                            data-weight="{{ weightCol }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Area create modal #}
+    {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-area-create-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Add a area'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    {% set form_name = area_create_form.vars.full_name %}
+                    <form method="POST" action="{{ path('carriersdelivery.admin.area.create') }}">
+                        <input type="hidden" name="{{ area_create_form._token.vars.full_name }}" value="{{ area_create_form._token.vars.value }}">
+                        <input type="hidden" name="{{ form_name }}[success_url]" value="{{ path('carriersdelivery.admin.carrier.areas', {carrier_id: carrier_id}) }}">
+                        <input type="hidden" name="{{ form_name }}[carrier_id]" value="{{ carrier_id }}">
+                        {% do area_create_form.carrier_id.setRendered %}
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                {{ form_label(area_create_form.name, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(area_create_form.name, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(area_create_form.name) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(area_create_form.departments, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(area_create_form.departments, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(area_create_form.departments) }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Area delete modal #}
+    {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-area-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Delete this area'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.area.delete') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to delete this area?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="area_id" id="carriersdelivery-area-delete-id" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'Delete'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Areacost create modal (new weight column) #}
+    {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-areacost-create-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'New weight max'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    {% set form_name = areacost_create_form.vars.full_name %}
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.create') }}">
+                        <input type="hidden" name="{{ areacost_create_form._token.vars.full_name }}" value="{{ areacost_create_form._token.vars.value }}">
+                        <input type="hidden" name="{{ form_name }}[success_url]" value="{{ path('carriersdelivery.admin.carrier.areas', {carrier_id: carrier_id}) }}">
+                        <input type="hidden" name="{{ form_name }}[carrier_id]" value="{{ carrier_id }}">
+                        {% do areacost_create_form.carrier_id.setRendered %}
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                {{ form_label(areacost_create_form.weight_max, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(areacost_create_form.weight_max, {attr: {class: 'form-control', min: 0, step: 0.01}}) }}
+                                {{ form_errors(areacost_create_form.weight_max) }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {# Areacostkg create modal (new weight column for kg table) #}
+        <div class="modal fade" id="carriersdelivery-areacostkg-create-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'New weight max'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    {% set form_name = areacostkg_create_form.vars.full_name %}
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.create') }}">
+                        <input type="hidden" name="{{ areacostkg_create_form._token.vars.full_name }}" value="{{ areacostkg_create_form._token.vars.value }}">
+                        <input type="hidden" name="{{ form_name }}[success_url]" value="{{ path('carriersdelivery.admin.carrier.areas', {carrier_id: carrier_id}) }}">
+                        <input type="hidden" name="{{ form_name }}[carrier_id]" value="{{ carrier_id }}">
+                        {% do areacostkg_create_form.carrier_id.setRendered %}
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                {{ form_label(areacostkg_create_form.weight_max, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(areacostkg_create_form.weight_max, {attr: {class: 'form-control', min: 0, step: 0.01}}) }}
+                                {{ form_errors(areacostkg_create_form.weight_max) }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Areacost delete modal #}
+    {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-areacost-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Delete this weight slice'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.delete') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to delete this weight slice?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
+                            <input type="hidden" name="weight" id="carriersdelivery-areacost-delete-weight" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'Delete'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="carriersdelivery-areacostkg-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Delete this weight slice'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.delete') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to delete this weight slice?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
+                            <input type="hidden" name="weight" id="carriersdelivery-areacostkg-delete-weight" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'Delete'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Areascosts update confirm modal #}
+    {% if is_granted('UPDATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-areascosts-update-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Update this table costs'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.update') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to update this table?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
+                            <input type="hidden" name="areascosts" id="carriersdelivery-areascosts-update" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="carriersdelivery-areascostskg-update-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Update this table costs'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.update') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to update this table?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
+                            <input type="hidden" name="areascostskg" id="carriersdelivery-areascostskg-update" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts_extra %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            {# Area delete: populate hidden id on modal open #}
+            var areaDeleteModal = document.getElementById('carriersdelivery-area-delete-modal');
+            if (areaDeleteModal) {
+                areaDeleteModal.addEventListener('show.bs.modal', function (event) {
+                    document.getElementById('carriersdelivery-area-delete-id').value = event.relatedTarget.getAttribute('data-area-id');
+                });
+            }
+
+            {# Areacost delete: populate weight #}
+            var areacostDeleteModal = document.getElementById('carriersdelivery-areacost-delete-modal');
+            if (areacostDeleteModal) {
+                areacostDeleteModal.addEventListener('show.bs.modal', function (event) {
+                    document.getElementById('carriersdelivery-areacost-delete-weight').value = event.relatedTarget.getAttribute('data-weight');
+                });
+            }
+
+            {# Areacostkg delete: populate weight #}
+            var areacostkgDeleteModal = document.getElementById('carriersdelivery-areacostkg-delete-modal');
+            if (areacostkgDeleteModal) {
+                areacostkgDeleteModal.addEventListener('show.bs.modal', function (event) {
+                    document.getElementById('carriersdelivery-areacostkg-delete-weight').value = event.relatedTarget.getAttribute('data-weight');
+                });
+            }
+
+            {# Show save button when a cost input changes #}
+            document.querySelectorAll('table.table-areacost tr.slice input').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    this.closest('td').classList.add('changed');
+                    var table = this.closest('table.table-areacost');
+                    table.querySelector('tfoot button.areacost-update, tfoot button.areacostkg-update').classList.remove('d-none');
+                });
+            });
+
+            {# Collect changed cells and populate the hidden JSON field before opening confirm modal #}
+            document.querySelectorAll('table#areascosts tfoot button.areacost-update').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var areascosts = [];
+                    document.querySelectorAll('table#areascosts tr.slice td.changed').forEach(function (td) {
+                        areascosts.push({id: td.getAttribute('data-id'), cost: td.querySelector('input').value});
+                    });
+                    document.getElementById('carriersdelivery-areascosts-update').value = JSON.stringify(areascosts);
+                });
+            });
+
+            document.querySelectorAll('table#areascostskg tfoot button.areacostkg-update').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var areascosts = [];
+                    document.querySelectorAll('table#areascostskg tr.slice td.changed').forEach(function (td) {
+                        areascosts.push({id: td.getAttribute('data-id'), cost: td.querySelector('input').value});
+                    });
+                    document.getElementById('carriersdelivery-areascostskg-update').value = JSON.stringify(areascosts);
+                });
+            });
+
+            {# Price calculator via fetch #}
+            var formGetPrice = document.getElementById('formGetPrice');
+            if (formGetPrice) {
+                formGetPrice.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        body: new URLSearchParams(new FormData(this))
+                    }).then(function (r) { return r.json(); })
+                      .then(function (data) { alert(data.message); })
+                      .catch(function () { alert('Error'); });
+                });
+            }
+        });
+    </script>
+{% endblock %}

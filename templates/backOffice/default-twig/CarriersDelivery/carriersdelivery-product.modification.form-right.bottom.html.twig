@@ -1,6 +1,6 @@
 {% if form is defined and form.carrier_id is defined %}
     <div class="card card-body">
-        <div class="mb-3 form-group-carrier">
+        <div class="mb-3 carrier-field-group">
             {{ form_label(form.carrier_id) }}
             {{ form_errors(form.carrier_id) }}
             {% for child in form.carrier_id %}

@@ -9,6 +9,9 @@ namespace CarriersDelivery\Controller\Back;
 
 
 use CarriersDelivery\CarriersDelivery;
+use CarriersDelivery\Form\AreacostCreateForm;
+use CarriersDelivery\Form\AreacostkgCreateForm;
+use CarriersDelivery\Form\AreaCreateForm;
 use CarriersDelivery\Model\CarriersdeliveryAreas;
 use CarriersDelivery\Model\CarriersdeliveryAreascostskgQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreascostsQuery;
@@ -53,13 +56,26 @@ class AreaController extends BaseAdminController
 
         $costskgByWeight = CarriersdeliveryAreascostskgQuery::getCostskgByWeightForCarrier($carrier_id);
 
+        $carrier = CarriersdeliveryCarrierQuery::create()->findPk($carrier_id);
+
+        $areaCreateForm = $this->createForm(AreaCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
+        $areacostCreateForm = $this->createForm(AreacostCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
+        $areacostkgCreateForm = $this->createForm(AreacostkgCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
+
         $args = [
             'carrier_id'            => $carrier_id,
+            'carrier_name'          => $carrier ? $carrier->getName() : '',
+            'carrier_diesel_tax'    => $carrier ? (float) $carrier->getDieselTaxPercent() : 0.0,
+            'carrier_fees_cost'     => $carrier ? (float) $carrier->getFeesCost() : 0.0,
+            'carrier_unit_per_kg'   => $carrier ? (float) $carrier->getUnitPerKg() : 0.0,
             'carrier_areas'         => $costsByWeight['carrier_areas'],
             'costAreasWeights'      => $costsByWeight['areasWeights'],
             'costDistinctWeights'   => $costsByWeight['distinctWeights'],
             'costkgAreasWeights'    => $costskgByWeight['areasWeights'],
             'costkgDistinctWeights' => $costskgByWeight['distinctWeights'],
+            'area_create_form'      => $areaCreateForm->getForm()->createView(),
+            'areacost_create_form'  => $areacostCreateForm->getForm()->createView(),
+            'areacostkg_create_form' => $areacostkgCreateForm->getForm()->createView(),
         ];
 
         return $this->render('carriersdelivery-areas-list', $args);
@@ -108,9 +124,11 @@ class AreaController extends BaseAdminController
         }
 
         $area = null;
+        $baseForm = null;
 
         if ($this->getRequest()->isMethod('POST')) {
             $form = $this->createForm('carriersdelivery_area_edit');
+            $baseForm = $form;
 
             try {
                 $editForm = $this->validateForm($form);
@@ -151,13 +169,15 @@ class AreaController extends BaseAdminController
             ];
 
             $editForm = $this->createForm('carriersdelivery_area_edit', 'form', $data);
+            $baseForm = $editForm;
 
             $this->getParserContext()->addForm($editForm);
         }
 
         $args = [
             'area_id'       => $area_id,
-            'carrier_id'    => $area->getCarrierId(),
+            'carrier_id'    => $area ? $area->getCarrierId() : null,
+            'edit_form'     => $baseForm !== null ? $baseForm->getForm()->createView() : null,
         ];
 
         return $this->render('carriersdelivery-area-edit', $args);

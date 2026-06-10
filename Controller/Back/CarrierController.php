@@ -8,6 +8,7 @@
 namespace CarriersDelivery\Controller\Back;
 
 
+use CarriersDelivery\Form\CarrierCreateForm;
 use CarriersDelivery\Model\CarriersdeliveryCarrier;
 use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
 use Thelia\Controller\Admin\BaseAdminController;
@@ -44,7 +45,25 @@ class CarrierController extends BaseAdminController
             return $response;
         }
 
-        return $this->render('carriersdelivery-carriers-list');
+        $createForm = $this->createForm(CarrierCreateForm::getName());
+
+        $carriers = CarriersdeliveryCarrierQuery::create()->orderByName()->find();
+        $carrierRows = [];
+        foreach ($carriers as $carrier) {
+            $carrierRows[] = [
+                'id' => $carrier->getId(),
+                'name' => $carrier->getName(),
+                'country_id' => $carrier->getCountryId(),
+                'diesel_tax_percent' => (float) $carrier->getDieselTaxPercent(),
+                'fees_cost' => (float) $carrier->getFeesCost(),
+                'unit_per_kg' => (float) $carrier->getUnitPerKg(),
+            ];
+        }
+
+        return $this->render('carriersdelivery-carriers-list', [
+            'carriers' => $carrierRows,
+            'create_form' => $createForm->getForm()->createView(),
+        ]);
     }
 
     /**
@@ -91,8 +110,11 @@ class CarrierController extends BaseAdminController
             return $response;
         }
 
+        $baseForm = null;
+
         if ($this->getRequest()->isMethod('POST')) {
             $form = $this->createForm('carriersdelivery_carrier_edit');
+            $baseForm = $form;
 
             try {
                 $editForm = $this->validateForm($form, 'POST');
@@ -138,12 +160,14 @@ class CarrierController extends BaseAdminController
             ];
 
             $editForm = $this->createForm('carriersdelivery_carrier_edit', 'form', $data);
+            $baseForm = $editForm;
 
             $this->getParserContext()->addForm($editForm);
         }
 
         $args = [
             'carrier_id' => $carrier_id,
+            'edit_form' => $baseForm !== null ? $baseForm->getForm()->createView() : null,
         ];
 
         return $this->render('carriersdelivery-carrier-edit', $args);

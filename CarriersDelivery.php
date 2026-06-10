@@ -34,7 +34,7 @@ use Thelia\Module\BaseModule;
 use Thelia\Module\DeliveryModuleInterface;
 use Thelia\Module\Exception\DeliveryException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
-use Thelia\TaxEngine\Calculator;
+use Thelia\Domain\Taxation\TaxEngine\Calculator;
 use Thelia\Tools\I18n;
 use ZipCode\ZipCode;
 

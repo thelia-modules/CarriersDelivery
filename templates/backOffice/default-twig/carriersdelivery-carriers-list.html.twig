@@ -1,0 +1,194 @@
+{% extends '@BackOfficeDefaultTwig/base.html.twig' %}
+
+{% block title %}{{ 'CarriersDelivery'|trans({}, 'carriersdelivery.bo.default') }}{% endblock %}
+
+{% block content %}
+    <div class="carriersdelivery">
+        <div id="wrapper" class="container">
+            {% include '@CarriersDeliveryModule/backOffice/default-twig/CarriersDelivery/includes/carriersdelivery-menu.html.twig' with {'menu_active': 'carriers'} %}
+
+            <div class="card">
+                <div class="card-body">
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="h4 mb-0">{{ 'CarriersDelivery'|trans({}, 'carriersdelivery.bo.default') }}</h1>
+                        {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carriersdelivery-carrier-create-modal">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            {% if carriers|length %}
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'ID'|trans }}</th>
+                                        <th>{{ 'Name'|trans }}</th>
+                                        <th>{{ 'Country'|trans }}</th>
+                                        <th>{{ 'Areas'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        <th class="text-center">{{ 'Diesel tax'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        <th class="text-center">{{ 'Fees cost'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        <th class="text-center">{{ 'Price/Kg'|trans({}, 'carriersdelivery.bo.default') }}</th>
+                                        <th class="text-end">{{ 'Actions'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carrier in carriers %}
+                                        <tr>
+                                            <td>{{ carrier.id }}</td>
+                                            <td class="object-title">
+                                                <a href="{{ path('carriersdelivery.admin.carrier.edit', {id: carrier.id}) }}">{{ carrier.name }}</a>
+                                            </td>
+                                            <td>{{ carrier.country_id }}</td>
+                                            <td>
+                                                <a class="btn btn-secondary btn-sm" href="{{ path('carriersdelivery.admin.carrier.areas', {carrier_id: carrier.id}) }}">
+                                                    <span class="d-none d-md-inline">{{ 'See areas'|trans({}, 'carriersdelivery.bo.default') }}</span>
+                                                    <i class="bi bi-tags"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if carrier.diesel_tax_percent == 0 %}-{% else %}{{ carrier.diesel_tax_percent|number_format(3, '.', ' ') }} %{% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if carrier.fees_cost == 0 %}-{% else %}{{ carrier.fees_cost|number_format(2, '.', ' ') }}{% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if carrier.unit_per_kg == 0 %}-{% else %}{{ carrier.unit_per_kg|number_format(2, '.', ' ') }} Kg{% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="btn-group">
+                                                    {% if is_granted('UPDATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                        <a class="btn btn-secondary btn-sm" href="{{ path('carriersdelivery.admin.carrier.edit', {id: carrier.id}) }}">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#carriersdelivery-carrier-delete-modal"
+                                                                data-carrier-id="{{ carrier.id }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            {% else %}
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="8">
+                                            <div class="alert alert-info mb-0">
+                                                {{ 'There is no results.'|trans({}, 'carriersdelivery.bo.default') }}
+                                                {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+                                                    {{ 'To create a new one, click the + button above.'|trans({}, 'carriersdelivery.bo.default') }}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Create carrier modal #}
+    {% if is_granted('CREATE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-carrier-create-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Add a carrier'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    {% set form_name = create_form.vars.full_name %}
+                    <form method="POST" action="{{ path('carriersdelivery.admin.carrier.create') }}">
+                        <input type="hidden" name="{{ create_form._token.vars.full_name }}" value="{{ create_form._token.vars.value }}">
+                        <input type="hidden" name="{{ form_name }}[success_url]" value="{{ path('carriersdelivery.admin.carriers') }}">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                {{ form_label(create_form.name, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(create_form.name, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(create_form.name) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(create_form.country_id, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(create_form.country_id, {attr: {class: 'form-select'}}) }}
+                                {{ form_errors(create_form.country_id) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(create_form.diesel_tax_percent, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(create_form.diesel_tax_percent, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(create_form.diesel_tax_percent) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(create_form.fees_cost, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(create_form.fees_cost, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(create_form.fees_cost) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(create_form.unit_per_kg, null, {label_attr: {class: 'form-label'}}) }}
+                                {{ form_widget(create_form.unit_per_kg, {attr: {class: 'form-control'}}) }}
+                                {{ form_errors(create_form.unit_per_kg) }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Delete carrier modal #}
+    {% if is_granted('DELETE', {resource: 'admin.module', module: 'CarriersDelivery'}) %}
+        <div class="modal fade" id="carriersdelivery-carrier-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ 'Delete this carrier'|trans({}, 'carriersdelivery.bo.default') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <form method="POST" action="{{ path('carriersdelivery.admin.carrier.delete') }}?_token={{ assignToken() }}">
+                        <div class="modal-body">
+                            <p>{{ 'Do you really want to delete this carrier?'|trans({}, 'carriersdelivery.bo.default') }}</p>
+                            <input type="hidden" name="carrier_id" id="carriersdelivery-carrier-delete-id" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>{{ 'Delete'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts_extra %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteModal = document.getElementById('carriersdelivery-carrier-delete-modal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('carriersdelivery-carrier-delete-id').value = button.getAttribute('data-carrier-id');
+                });
+            }
+        });
+    </script>
+{% endblock %}
