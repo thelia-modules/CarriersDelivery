@@ -154,7 +154,14 @@ class CarriersDeliveryListener implements EventSubscriberInterface
     public function savePostageLogInTable(OrderEvent $orderEvent)
     {
         if ($orderEvent->getOrder()->getDeliveryModuleId() === CarriersDelivery::getModuleId()) {
-            $postageResult = $this->requestStack->getCurrentRequest()->getSession()->get('CarrierDeliveryPostageResult', null);
+            $request = $this->requestStack->getCurrentRequest();
+
+            if (null === $request || !$request->hasSession()) {
+                return;
+            }
+
+            $session = $request->getSession();
+            $postageResult = $session->get('CarrierDeliveryPostageResult', null);
 
             $orderId = $orderEvent->getOrder()->getId();
 
@@ -166,7 +173,7 @@ class CarriersDeliveryListener implements EventSubscriberInterface
                     ->setPostageLog(print_r($postageResult['debug'], true))
                     ->save();
 
-                $this->requestStack->getCurrentRequest()->getSession()->set('CarrierDeliveryPostageResult', null);
+                $session->set('CarrierDeliveryPostageResult', null);
             }
         }
     }

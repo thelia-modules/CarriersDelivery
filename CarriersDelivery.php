@@ -115,11 +115,18 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
      */
     public function getPostage(Country $country): \Thelia\Model\OrderPostage|float
     {
-        $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
+        $request = $this->getRequest();
+
+        if (null === $request || !$request->hasSession()) {
+            throw new DeliveryException();
+        }
+
+        $session = $request->getSession();
+        $cart = $session->getSessionCart($this->getDispatcher());
 
         $result = $this->getSlicePostage($cart);
 
-        $this->getRequest()->getSession()->set('CarrierDeliveryPostageResult', $result);
+        $session->set('CarrierDeliveryPostageResult', $result);
 
         if (!isset($result['orderPostage'])) {
             throw new DeliveryException();
@@ -142,7 +149,13 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
      */
     public function isValidDelivery(Country $country): bool
     {
-        $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
+        $request = $this->getRequest();
+
+        if (null === $request || !$request->hasSession()) {
+            return false;
+        }
+
+        $cart = $request->getSession()->getSessionCart($this->getDispatcher());
 
         $result = $this->getSlicePostage($cart);
 
@@ -234,6 +247,10 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
     public static function getCartDeliveryAddress(Request $request)
     {
         $address = null;
+
+        if (!$request->hasSession()) {
+            return null;
+        }
 
         $session = $request->getSession();
 
@@ -521,8 +538,13 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
             $orderPostage->setAmountTax(0);
 
             if (0 !== $config['tax']) {
+                $request = $this->getRequest();
+                $locale = (null !== $request && $request->hasSession())
+                    ? $request->getSession()->getLang()->getLocale()
+                    : (\Thelia\Model\LangQuery::create()->findOneByByDefault(true)?->getLocale() ?? 'en_US');
+
                 $taxRuleI18N = I18n::forceI18nRetrieving(
-                    $this->getRequest()->getSession()->getLang()->getLocale(),
+                    $locale,
                     'TaxRule',
                     $config['tax']
                 );
