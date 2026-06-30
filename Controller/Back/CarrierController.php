@@ -133,7 +133,8 @@ class CarrierController extends BaseAdminController
                     ->setUnitPerKg($editForm->get('unit_per_kg')->getData())
                     ->save();
 
-                if ($this->getRequest()->get('save_mode') != 'stay') {
+                $request = $this->getRequest();
+                if ($request->attributes->get('save_mode', $request->query->get('save_mode', $request->request->get('save_mode'))) != 'stay') {
                     return $this->generateSuccessRedirect($form);
                 }
 
