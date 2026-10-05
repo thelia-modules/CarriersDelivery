@@ -48,7 +48,7 @@ class AreaCreateForm extends BaseForm
                 HiddenType::class,
                 [
                     'constraints'   => [
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
+                        new Constraints\GreaterThanOrEqual(value: 0),
                     ],
                     'label'         => 'carrier_id',
                     'required'      => true,

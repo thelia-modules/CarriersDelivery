@@ -10,7 +10,7 @@ namespace CarriersDelivery\Form;
 use CarriersDelivery\CarriersDelivery;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Thelia\Form\BaseForm;
 use Thelia\Model\TaxRuleQuery;
 
@@ -52,11 +52,7 @@ class ConfigForm extends BaseForm
                 IntegerType::class,
                 [
                     'constraints' => [
-                        new Callback([
-                            'methods' => [
-                                [$this, 'checkTaxRuleId']
-                            ]
-                        ])
+                        new Callback($this->checkTaxRuleId(...)),
                     ],
                     'data' => $config['tax'],
                     'label' => $this->trans('Tax rule'),

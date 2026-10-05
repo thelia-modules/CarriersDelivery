@@ -66,8 +66,8 @@ class CarrierCreateForm extends BaseForm
                 [
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\Type(['type' => 'numeric']),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\Type(type: 'numeric'),
                     ],
                     'label'     => $translator->trans('Diesel tax percent', [], 'carriersdelivery.bo.default'),
                     'required'  => true,
@@ -79,8 +79,8 @@ class CarrierCreateForm extends BaseForm
                 [
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\Type(['type' => 'numeric']),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\Type(type: 'numeric'),
                     ],
                     'label'     => $translator->trans('Fees cost', [], 'carriersdelivery.bo.default'),
                     'required'  => true,
@@ -92,8 +92,8 @@ class CarrierCreateForm extends BaseForm
                 [
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\LessThan(['value' => 32767]),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\LessThan(value: 32767),
                     ],
                     'label'     => $translator->trans('Unit per Kg price', [], 'carriersdelivery.bo.default'),
                     'required'  => true,
