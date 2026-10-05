@@ -11,6 +11,7 @@ namespace CarriersDelivery\Controller\Back;
 use CarriersDelivery\CarriersDelivery;
 use CarriersDelivery\Model\CarriersdeliveryAreascostskg;
 use CarriersDelivery\Model\CarriersdeliveryAreascostskgQuery;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -37,6 +38,7 @@ class AreacostkgController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/areacostkg/create', name: 'carriersdelivery.admin.areacostkg.create')]
     public function createAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::CREATE)) {
@@ -84,6 +86,7 @@ class AreacostkgController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/areacostkg/delete', name: 'carriersdelivery.admin.areacostkg.delete')]
     public function deleteAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::DELETE)) {
@@ -126,6 +129,7 @@ class AreacostkgController extends BaseAdminController
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      * @throws \Exception
      */
+    #[Route('/admin/module/CarriersDelivery/areacostkg/update', name: 'carriersdelivery.admin.areacostkg.update')]
     public function updateAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {

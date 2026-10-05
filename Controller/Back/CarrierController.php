@@ -12,6 +12,7 @@ use CarriersDelivery\Form\CarrierCreateForm;
 use CarriersDelivery\Model\CarriersdeliveryCarrier;
 use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -40,6 +41,7 @@ class CarrierController extends BaseAdminController
     /**
      * @return \Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery', name: 'carriersdelivery.admin.carriers')]
     public function listAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::VIEW)) {
@@ -70,6 +72,7 @@ class CarrierController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/carrier/create', name: 'carriersdelivery.admin.carrier.create')]
     public function createAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::CREATE)) {
@@ -105,6 +108,7 @@ class CarrierController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/carrier/edit', name: 'carriersdelivery.admin.carrier.edit')]
     public function editAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {
@@ -178,6 +182,7 @@ class CarrierController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/carrier/delete', name: 'carriersdelivery.admin.carrier.delete')]
     public function deleteAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::DELETE)) {

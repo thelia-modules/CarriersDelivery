@@ -12,6 +12,7 @@ use CarriersDelivery\Form\PackingcostCreateForm;
 use CarriersDelivery\Form\PackingcostEditForm;
 use CarriersDelivery\Model\CarriersdeliveryPackingcosts;
 use CarriersDelivery\Model\CarriersdeliveryPackingcostsQuery;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -39,6 +40,7 @@ class PackingcostController extends BaseAdminController
     /**
      * @return \Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/packingcosts', name: 'carriersdelivery.admin.packingcosts')]
     public function listAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::VIEW)) {
@@ -71,6 +73,7 @@ class PackingcostController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/packingcost/create', name: 'carriersdelivery.admin.packingcost.create')]
     public function createAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::CREATE)) {
@@ -110,6 +113,7 @@ class PackingcostController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/packingcost/edit', name: 'carriersdelivery.admin.packingcost.edit')]
     public function editAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {
@@ -150,6 +154,7 @@ class PackingcostController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/packingcost/delete', name: 'carriersdelivery.admin.packingcost.delete')]
     public function deleteAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::DELETE)) {

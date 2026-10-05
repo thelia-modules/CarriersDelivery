@@ -9,6 +9,7 @@ namespace CarriersDelivery\Controller\Back;
 
 
 use CarriersDelivery\CarriersDelivery;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -20,6 +21,7 @@ class ConfigController extends BaseAdminController
     /**
      * @return \Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/config', name: 'carriersdelivery.admin.config')]
     public function configAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {
