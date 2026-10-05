@@ -7,6 +7,8 @@
 
 namespace CarriersDelivery\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use CarriersDelivery\Form\Type\DepartmentType;
 use Symfony\Component\Validator\Constraints;
 use Thelia\Core\Translation\Translator;
@@ -32,7 +34,7 @@ class AreaCreateForm extends BaseForm
         $this->formBuilder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 [
                     'constraints'   => [
                         new Constraints\NotBlank(),
@@ -43,7 +45,7 @@ class AreaCreateForm extends BaseForm
             )
             ->add(
                 'carrier_id',
-                'hidden',
+                HiddenType::class,
                 [
                     'constraints'   => [
                         new Constraints\GreaterThanOrEqual(['value' => 0]),

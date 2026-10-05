@@ -7,6 +7,7 @@
 
 namespace CarriersDelivery\EventListeners;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use CarriersDelivery\CarriersDelivery;
 use CarriersDelivery\Model\CarriersdeliveryOrder;
 use CarriersDelivery\Model\CarriersdeliveryProductQuery;
@@ -85,9 +86,9 @@ class CarriersDeliveryListener implements EventSubscriberInterface
 
         $event->getForm()->getFormBuilder()->add(
             'carrier_id',
-            'choice',
+            ChoiceType::class,
             [
-                'choices'   => $carriersList,
+                'choices'   => array_flip($carriersList),
                 'data'      => $data,
                 'label'     => Translator::getInstance()->trans('Choose a carrier', [], 'carriersdelivery.bo.default'),
                 'multiple'  => true,

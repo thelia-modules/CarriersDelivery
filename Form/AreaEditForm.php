@@ -7,6 +7,7 @@
 
 namespace CarriersDelivery\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints;
 
 class AreaEditForm extends AreaCreateForm
@@ -29,7 +30,7 @@ class AreaEditForm extends AreaCreateForm
         $this->formBuilder
             ->add(
                 'id',
-                'hidden',
+                HiddenType::class,
                 [
                     'constraints' => [
                         new Constraints\GreaterThanOrEqual(['value' => 0]),

@@ -8,6 +8,7 @@
 namespace CarriersDelivery\Form;
 
 use CarriersDelivery\CarriersDelivery;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Thelia\Form\BaseForm;
@@ -48,7 +49,7 @@ class ConfigForm extends BaseForm
         $this->formBuilder
             ->add(
                 'tax',
-                'tax_rule_id',
+                IntegerType::class,
                 [
                     'constraints' => [
                         new Callback([

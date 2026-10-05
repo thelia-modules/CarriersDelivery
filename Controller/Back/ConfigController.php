@@ -26,7 +26,7 @@ class ConfigController extends BaseAdminController
             return $response;
         }
 
-        $form = $this->createForm('carriersdelivery_config', 'form');
+        $form = $this->createForm('carriersdelivery_config');
 
         try {
             if ($this->getRequest()->isMethod('POST')) {

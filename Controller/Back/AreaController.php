@@ -17,6 +17,7 @@ use CarriersDelivery\Model\CarriersdeliveryAreascostskgQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreascostsQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreasQuery;
 use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -58,9 +59,9 @@ class AreaController extends BaseAdminController
 
         $carrier = CarriersdeliveryCarrierQuery::create()->findPk($carrier_id);
 
-        $areaCreateForm = $this->createForm(AreaCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
-        $areacostCreateForm = $this->createForm(AreacostCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
-        $areacostkgCreateForm = $this->createForm(AreacostkgCreateForm::getName(), 'form', ['carrier_id' => $carrier_id]);
+        $areaCreateForm = $this->createForm(AreaCreateForm::getName(), FormType::class, ['carrier_id' => $carrier_id]);
+        $areacostCreateForm = $this->createForm(AreacostCreateForm::getName(), FormType::class, ['carrier_id' => $carrier_id]);
+        $areacostkgCreateForm = $this->createForm(AreacostkgCreateForm::getName(), FormType::class, ['carrier_id' => $carrier_id]);
 
         $args = [
             'carrier_id'            => $carrier_id,
@@ -169,7 +170,7 @@ class AreaController extends BaseAdminController
                 'departments'   => $area->getDepartments(),
             ];
 
-            $editForm = $this->createForm('carriersdelivery_area_edit', 'form', $data);
+            $editForm = $this->createForm('carriersdelivery_area_edit', FormType::class, $data);
             $baseForm = $editForm;
 
             $this->getParserContext()->addForm($editForm);
