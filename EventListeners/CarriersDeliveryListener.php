@@ -24,6 +24,8 @@ use Thelia\Core\Translation\Translator;
 class CarriersDeliveryListener implements EventSubscriberInterface
 {
 
+    protected $translator;
+
     protected $requestStack;
 
     /**
@@ -41,7 +43,7 @@ class CarriersDeliveryListener implements EventSubscriberInterface
     /**
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             // TheliaEvents::FORM_BEFORE_BUILD . '.thelia_product_creation'        => ['addFieldToForm', 128],
