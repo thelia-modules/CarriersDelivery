@@ -7,7 +7,9 @@
 
 namespace CarriersDelivery\Hook;
 
+use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
 use CarriersDelivery\Model\CarriersdeliveryOrderQuery;
+use CarriersDelivery\Model\CarriersdeliveryProductQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Hook\BaseHook;
@@ -28,12 +30,29 @@ class BackHook extends BaseHook
 
     public function onProductModificationFormRightBottom(HookRenderEvent $event): void
     {
+        $productId = (int) $event->getArgument('product_id');
+
+        $carriers = CarriersdeliveryCarrierQuery::create()
+            ->orderByName()
+            ->find()
+            ->toKeyValue('Id', 'Name');
+
+        $selectedCarrierIds = array_map(
+            'intval',
+            CarriersdeliveryProductQuery::create()
+                ->filterByProductId($productId)
+                ->select(['CarrierId'])
+                ->find()
+                ->getData()
+        );
+
         $event->add(
             $this->render(
                 'CarriersDelivery/carriersdelivery-product.modification.form-right.bottom.html.twig',
                 [
-                    'form' => $event->getArgument('form'),
-                    'product_id' => $event->getArgument('product_id'),
+                    'product_id' => $productId,
+                    'carriers' => $carriers,
+                    'selected_carrier_ids' => $selectedCarrierIds,
                 ]
             )
         );

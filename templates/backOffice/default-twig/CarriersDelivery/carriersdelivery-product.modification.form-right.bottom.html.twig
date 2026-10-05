@@ -1,14 +1,13 @@
-{% if form is defined and form.carrier_id is defined %}
-    <div class="card card-body">
-        <div class="mb-3 carrier-field-group">
-            {{ form_label(form.carrier_id) }}
-            {{ form_errors(form.carrier_id) }}
-            {% for child in form.carrier_id %}
-                <div class="form-check">
-                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                </div>
-            {% endfor %}
+{# The product form is rendered without its rest: the carrier field added by the module is rendered here by hand. #}
+<div class="mb-3 carrier-field-group">
+    <label class="form-label">{{ 'Choose a carrier'|trans({}, 'carriersdelivery.bo.default') }}</label>
+    {% for carrier_id, carrier_name in carriers %}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="thelia_product_modification_carrier_id_{{ carrier_id }}"
+                   name="thelia_product_modification[carrier_id][]" value="{{ carrier_id }}"{{ carrier_id in selected_carrier_ids ? ' checked' }}>
+            <label class="form-check-label" for="thelia_product_modification_carrier_id_{{ carrier_id }}">{{ carrier_name }}</label>
         </div>
-    </div>
-{% endif %}
+    {% else %}
+        <p class="form-text text-muted">{{ 'There is no results.'|trans({}, 'carriersdelivery.bo.default') }}</p>
+    {% endfor %}
+</div>
