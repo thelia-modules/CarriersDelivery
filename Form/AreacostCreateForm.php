@@ -36,7 +36,7 @@ class AreacostCreateForm extends BaseForm
                 HiddenType::class,
                 [
                     'constraints'   => [
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
+                        new Constraints\GreaterThanOrEqual(value: 0),
                     ],
                     'label'         => 'carrier_id',
                     'required'      => true,
@@ -52,8 +52,8 @@ class AreacostCreateForm extends BaseForm
                     ],
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\Type(['type' => 'numeric']),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\Type(type: 'numeric'),
                     ],
                     'label'     => $translator->trans('Enter the weight to add', [], 'carriersdelivery.bo.default'),
                     'required'  => true,

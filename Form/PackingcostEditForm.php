@@ -33,7 +33,7 @@ class PackingcostEditForm extends PackingcostCreateForm
                 HiddenType::class,
                 [
                     'constraints' => [
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
+                        new Constraints\GreaterThanOrEqual(value: 0),
                     ],
                     'required' => true,
                 ]

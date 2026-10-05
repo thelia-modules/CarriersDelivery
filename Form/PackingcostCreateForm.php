@@ -40,8 +40,8 @@ class PackingcostCreateForm extends BaseForm
                     ],
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\Type(['type' => 'numeric']),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\Type(type: 'numeric'),
                     ],
                     'label'     => $translator->trans('Weight max', [], 'carriersdelivery.bo.default'),
                     'required'  => true,
@@ -57,8 +57,8 @@ class PackingcostCreateForm extends BaseForm
                     ],
                     'constraints' => [
                         new Constraints\NotBlank(),
-                        new Constraints\GreaterThanOrEqual(['value' => 0]),
-                        new Constraints\Type(['type' => 'numeric']),
+                        new Constraints\GreaterThanOrEqual(value: 0),
+                        new Constraints\Type(type: 'numeric'),
                     ],
                     'label'     => $translator->trans('Cost', [], 'carriersdelivery.bo.default'),
                     'required'  => true,
