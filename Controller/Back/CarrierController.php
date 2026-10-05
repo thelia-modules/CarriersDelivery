@@ -200,7 +200,7 @@ class CarrierController extends BaseAdminController
             $this->getSession()->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        $url = $this->getRouteFromRouter('router.carriersdelivery', 'carriersdelivery.admin.carriers');
+        $url = $this->getRoute('carriersdelivery.admin.carriers');
 
         return $this->generateRedirect($url);
     }
