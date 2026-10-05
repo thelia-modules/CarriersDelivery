@@ -51,9 +51,11 @@ class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
 
     public static function configureServices(ServicesConfigurator $services): void
     {
-        $services->load(self::getModuleCode().'\\Hook\\', __DIR__.'/Hook')
-            ->autowire(true)
-            ->autoconfigure(true);
+        foreach (['Controller', 'Form', 'Hook'] as $directory) {
+            $services->load(self::getModuleCode().'\\'.$directory.'\\', __DIR__.'/'.$directory)
+                ->autowire(true)
+                ->autoconfigure(true);
+        }
     }
 
     /**
