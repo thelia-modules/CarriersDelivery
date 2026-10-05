@@ -14,7 +14,7 @@ class PackingcostEditForm extends PackingcostCreateForm
     /**
      * @return string
      */
-    public function getName(): string
+    public static function getName(): string
     {
         return 'carriersdelivery_packingcost_edit';
     }
