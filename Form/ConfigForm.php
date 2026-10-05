@@ -8,6 +8,7 @@
 namespace CarriersDelivery\Form;
 
 use CarriersDelivery\CarriersDelivery;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -61,6 +62,15 @@ class ConfigForm extends BaseForm
                         'help' => $this->trans('The tax rule used to calculate postage taxes.')
                     ],
                     'required' => true,
+                ]
+            )
+            ->add(
+                'log',
+                CheckboxType::class,
+                [
+                    'data' => $config['log'],
+                    'label' => $this->trans('Log the postage computation'),
+                    'required' => false,
                 ]
             );
     }

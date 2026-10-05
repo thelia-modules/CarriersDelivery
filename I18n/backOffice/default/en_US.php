@@ -8,4 +8,6 @@
 
 return array(
 
+    'Log the postage computation' => 'Log the postage computation',
+    'Writes the details of each postage computation to var/log/carriersdelivery.log.' => 'Writes the details of each postage computation to var/log/carriersdelivery.log.',
 );
