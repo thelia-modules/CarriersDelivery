@@ -7,6 +7,9 @@
 
 namespace CarriersDelivery\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use CarriersDelivery\Form\Type\MyNumberType;
 use Symfony\Component\Validator\Constraints;
 use Thelia\Core\Translation\Translator;
@@ -39,7 +42,7 @@ class CarrierCreateForm extends BaseForm
         $this->formBuilder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 [
                     'constraints' => [
                         new Constraints\NotBlank(),
@@ -50,9 +53,9 @@ class CarrierCreateForm extends BaseForm
             )
             ->add(
                 'country_id',
-                'choice',
+                ChoiceType::class,
                 [
-                    'choices'   => $countriesList,
+                    'choices'   => array_flip($countriesList),
                     'label'     => $translator->trans('Country'),
                     'required'  => true,
                 ]
@@ -85,7 +88,7 @@ class CarrierCreateForm extends BaseForm
             )
             ->add(
                 'unit_per_kg',
-                'integer',
+                IntegerType::class,
                 [
                     'constraints' => [
                         new Constraints\NotBlank(),

@@ -11,6 +11,7 @@ namespace CarriersDelivery\Controller\Back;
 use CarriersDelivery\Form\CarrierCreateForm;
 use CarriersDelivery\Model\CarriersdeliveryCarrier;
 use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -160,7 +161,7 @@ class CarrierController extends BaseAdminController
                 'unit_per_kg'           => $carrier->getUnitPerKg(),
             ];
 
-            $editForm = $this->createForm('carriersdelivery_carrier_edit', 'form', $data);
+            $editForm = $this->createForm('carriersdelivery_carrier_edit', FormType::class, $data);
             $baseForm = $editForm;
 
             $this->getParserContext()->addForm($editForm);

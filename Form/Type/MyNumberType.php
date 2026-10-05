@@ -11,6 +11,7 @@ namespace CarriersDelivery\Form\Type;
 use CarriersDelivery\CarriersDelivery;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class MyNumberType extends AbstractType
@@ -28,16 +29,16 @@ class MyNumberType extends AbstractType
     /**
      * @return null|string|\Symfony\Component\Form\FormTypeInterface
      */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return 'number';
+        return NumberType::class;
     }
 
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addViewTransformer(new CallbackTransformer(
             function ($original) {

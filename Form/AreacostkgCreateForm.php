@@ -7,6 +7,7 @@
 
 namespace CarriersDelivery\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use CarriersDelivery\Form\Type\MyNumberType;
 use Symfony\Component\Validator\Constraints;
 use Thelia\Core\Translation\Translator;
@@ -32,7 +33,7 @@ class AreacostkgCreateForm extends BaseForm
         $this->formBuilder
             ->add(
                 'carrier_id',
-                'hidden',
+                HiddenType::class,
                 [
                     'constraints'   => [
                         new Constraints\GreaterThanOrEqual(['value' => 0]),
