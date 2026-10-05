@@ -174,7 +174,7 @@ class PackingcostController extends BaseAdminController
             $this->getSession()->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        $url = $this->getRouteFromRouter('router.carriersdelivery', 'carriersdelivery.admin.packingcosts');
+        $url = $this->getRoute('carriersdelivery.admin.packingcosts');
 
         return $this->generateRedirect($url);
     }

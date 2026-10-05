@@ -210,11 +210,7 @@ class AreaController extends BaseAdminController
             $this->getSession()->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        $url = $this->getRouteFromRouter(
-            'router.carriersdelivery',
-            'carriersdelivery.admin.carrier.areas',
-            ['carrier_id' => $area->getCarrierId()]
-        );
+        $url = $this->getRoute('carriersdelivery.admin.carrier.areas', ['carrier_id' => $area->getCarrierId()]);
 
         return $this->generateRedirect($url);
     }

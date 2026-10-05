@@ -116,7 +116,7 @@ class AreacostController extends BaseAdminController
             $this->getSession()->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        $url = $this->getRouteFromRouter('router.carriersdelivery', 'carriersdelivery.admin.carrier.areas', ['carrier_id' => $carrier_id]);
+        $url = $this->getRoute('carriersdelivery.admin.carrier.areas', ['carrier_id' => $carrier_id]);
 
         return $this->generateRedirect($url);
     }
@@ -161,7 +161,7 @@ class AreacostController extends BaseAdminController
             $this->getSession()->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        $url = $this->getRouteFromRouter('router.carriersdelivery', 'carriersdelivery.admin.carrier.areas', ['carrier_id' => $carrier_id]);
+        $url = $this->getRoute('carriersdelivery.admin.carrier.areas', ['carrier_id' => $carrier_id]);
 
         return $this->generateRedirect($url);
     }
