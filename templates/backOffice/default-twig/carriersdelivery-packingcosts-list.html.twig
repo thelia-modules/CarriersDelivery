@@ -162,7 +162,7 @@
             }
 
             {# Save button per row: submit edit form via AJAX #}
-            document.querySelectorAll('#wrapper tr.slice .actions button.update').forEach(function (btn) {
+            document.querySelectorAll('#wrapper tr.slice button.update').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var row = this.closest('tr.slice');
                     document.getElementById('pc-edit-id').value = row.getAttribute('data-id');
