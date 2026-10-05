@@ -41,6 +41,7 @@
                                     <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>{{ 'Save'|trans }}</button>
                                 </div>
 
+                                {% do edit_form.success_url.setRendered() %}
                                 {{ form_rest(edit_form) }}
                             </div>
                         </form>
