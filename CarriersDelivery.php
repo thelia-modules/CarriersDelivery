@@ -556,6 +556,10 @@ class CarriersDelivery extends AbstractDeliveryModule
 
             $debug[] = '$minPostageCombination:' . $minPostageCombination . '=>' . $minPostage;
 
+            if (null === $minPostage) {
+                throw new \Exception('No rate covers this cart!');
+            }
+
             $orderPostage = new OrderPostage();
             $orderPostage->setAmount($minPostage);
             $orderPostage->setAmountTax(0);
