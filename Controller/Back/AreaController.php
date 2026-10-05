@@ -18,6 +18,7 @@ use CarriersDelivery\Model\CarriersdeliveryAreascostsQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreasQuery;
 use CarriersDelivery\Model\CarriersdeliveryCarrierQuery;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
@@ -47,6 +48,7 @@ class AreaController extends BaseAdminController
      * @param $carrier_id
      * @return \Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/carrier/{carrier_id}/areas', name: 'carriersdelivery.admin.carrier.areas', requirements: ['carrier_id' => '\\d+'])]
     public function listAction($carrier_id)
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::VIEW)) {
@@ -85,6 +87,7 @@ class AreaController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/area/create', name: 'carriersdelivery.admin.area.create')]
     public function createAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::CREATE)) {
@@ -118,6 +121,7 @@ class AreaController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/area/edit', name: 'carriersdelivery.admin.area.edit')]
     public function editAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {
@@ -188,6 +192,7 @@ class AreaController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/area/delete', name: 'carriersdelivery.admin.area.delete')]
     public function deleteAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::DELETE)) {
@@ -218,6 +223,7 @@ class AreaController extends BaseAdminController
     /**
      * @return mixed|\Thelia\Core\HttpFoundation\Response
      */
+    #[Route('/admin/module/CarriersDelivery/area/price', name: 'carriersdelivery.admin.area.price')]
     public function priceAction()
     {
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::DELETE)) {
