@@ -30,15 +30,14 @@ use Thelia\Model\Customer;
 use Thelia\Model\ModuleQuery;
 use Thelia\Model\OrderPostage;
 use Thelia\Model\TaxRuleQuery;
-use Thelia\Module\BaseModule;
-use Thelia\Module\DeliveryModuleInterface;
+use Thelia\Module\AbstractDeliveryModule;
 use Thelia\Module\Exception\DeliveryException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Domain\Taxation\TaxEngine\Calculator;
 use Thelia\Tools\I18n;
 use ZipCode\ZipCode;
 
-class CarriersDelivery extends BaseModule implements DeliveryModuleInterface
+class CarriersDelivery extends AbstractDeliveryModule
 {
     const DOMAIN_NAME = 'carriersdelivery';
 
