@@ -193,6 +193,8 @@ class AreaController extends BaseAdminController
             return $response;
         }
 
+        $this->getTokenProvider()->checkToken((string) $this->getRequest()->request->get('_token'));
+
         try {
             $area_id = $this->getRequest()->request->get('area_id');
 

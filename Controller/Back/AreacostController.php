@@ -89,6 +89,8 @@ class AreacostController extends BaseAdminController
             return $response;
         }
 
+        $this->getTokenProvider()->checkToken((string) $this->getRequest()->request->get('_token'));
+
         $carrier_id = $this->getRequest()->request->getInt('carrier_id');
 
         try {
@@ -128,6 +130,8 @@ class AreacostController extends BaseAdminController
         if (null !== $response = $this->checkAuth([], ['CarriersDelivery'], AccessManager::UPDATE)) {
             return $response;
         }
+
+        $this->getTokenProvider()->checkToken((string) $this->getRequest()->request->get('_token'));
 
         $carrier_id = $this->getRequest()->request->getInt('carrier_id');
 

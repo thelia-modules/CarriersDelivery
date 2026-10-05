@@ -156,6 +156,8 @@ class PackingcostController extends BaseAdminController
             return $response;
         }
 
+        $this->getTokenProvider()->checkToken((string) $this->getRequest()->request->get('_token'));
+
         try {
             $packingcost_id = $this->getRequest()->request->get('packingcost_id');
 
