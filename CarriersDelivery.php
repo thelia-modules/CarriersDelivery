@@ -7,6 +7,7 @@
 
 namespace CarriersDelivery;
 
+use CarriersDelivery\EventListeners\DeliveryOptionListener;
 use CarriersDelivery\Model\CarriersdeliveryAreascostskgQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreascostsQuery;
 use CarriersDelivery\Model\CarriersdeliveryAreasQuery;
@@ -55,6 +56,10 @@ class CarriersDelivery extends AbstractDeliveryModule
                 ->autowire(true)
                 ->autoconfigure(true);
         }
+
+        $services->set(DeliveryOptionListener::class)
+            ->autowire(true)
+            ->autoconfigure(true);
     }
 
     /**
