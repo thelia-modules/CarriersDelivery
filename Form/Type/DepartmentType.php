@@ -50,7 +50,7 @@ class DepartmentType extends AbstractType
                     return trim($tag);
                 }, explode(',', $submitted));
 
-                return $submitted;
+                return array_values(array_filter($submitted, static fn ($tag) => '' !== $tag));
             }
         ));
     }
