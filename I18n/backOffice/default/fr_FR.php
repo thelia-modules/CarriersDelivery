@@ -53,6 +53,7 @@ return array(
     'Entry error on weight!' => 'Erreur de saisie sur le poids',
     'Fees cost' => 'Frais de dossier',
     'Get Price' => 'Calculer le prix',
+    'Log the postage computation' => 'Journaliser le calcul des frais de port',
     'New weight max' => 'Nouvelle tranche de poids',
     'No price for this area/weight!' => 'Pas de prix pour cette zone/poids !',
     'No taxes' => 'Pas de taxe',
@@ -73,6 +74,7 @@ return array(
     'Up to' => 'Jusqu\'à',
     'Update this table costs' => 'Mettre à jour ce tableau de prix',
     'Weight max' => 'Poids max.',
+    'Writes the details of each postage computation to var/log/carriersdelivery.log.' => 'Écrit le détail de chaque calcul de frais de port dans var/log/carriersdelivery.log.',
     'Zip code' => 'Code postal',
     'Zip codes' => 'Codes postaux',
 );

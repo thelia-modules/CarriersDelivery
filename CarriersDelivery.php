@@ -21,6 +21,7 @@ use Propel\Runtime\Exception\PropelException;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Translation\Translator;
 use Thelia\Core\Install\Database;
+use Thelia\Log\Destination\TlogDestinationFile;
 use Thelia\Log\Tlog;
 use Thelia\Model\Address;
 use Thelia\Model\AddressQuery;
@@ -44,10 +45,9 @@ class CarriersDelivery extends AbstractDeliveryModule
 
     const CONFIG_TRACKING_URL = 'carriersdelivery_tracking_url';
     const CONFIG_TAX_RULE_ID = 'carriersdelivery_taxe_rule';
+    const CONFIG_LOG_ENABLED = 'carriersdelivery_log_enabled';
     const DEFAULT_TRACKING_URL = '%ID%';
     const DEFAULT_TAX_RULE_ID = 0;
-
-    protected $logIsActive = true;
 
     public static function configureServices(ServicesConfigurator $services): void
     {
@@ -68,21 +68,19 @@ class CarriersDelivery extends AbstractDeliveryModule
      */
     protected function saveLog($infos)
     {
-        if ($this->logIsActive) {
-            $log = Tlog::getNewInstance();
-
-            $logFilePath = $this->getLogFilePath();
-
-            $log->setPrefix("#LEVEL: #DATE #HOUR: ");
-            $log->setDestinations("\\Thelia\\Log\\Destination\\TlogDestinationFile");
-            $log->setConfig("\\Thelia\\Log\\Destination\\TlogDestinationFile", 0, $logFilePath);
-            $log->setLevel(Tlog::INFO);
-            $log->info(print_r($infos, true));
-
-            return true;
+        if (!self::getConfig()['log']) {
+            return false;
         }
 
-        return false;
+        $log = Tlog::getNewInstance();
+
+        $log->setPrefix("#LEVEL: #DATE #HOUR: ");
+        $log->setDestinations(TlogDestinationFile::class);
+        $log->setConfig(TlogDestinationFile::class, TlogDestinationFile::VAR_PATH_FILE, $this->getLogFilePath());
+        $log->setLevel(Tlog::INFO);
+        $log->info(print_r($infos, true));
+
+        return true;
     }
 
     /**
@@ -90,7 +88,7 @@ class CarriersDelivery extends AbstractDeliveryModule
      */
     protected function getLogFilePath()
     {
-        return sprintf(THELIA_ROOT . 'log' . DS . '%s.log', strtolower($this->getModuleCode()));
+        return sprintf(THELIA_LOG_DIR . '%s.log', strtolower($this->getModuleCode()));
     }
 
     /**
@@ -305,6 +303,7 @@ class CarriersDelivery extends AbstractDeliveryModule
         $config = [
             'url' => self::getConfigValue(self::CONFIG_TRACKING_URL, self::DEFAULT_TRACKING_URL),
             'tax' => intval(self::getConfigValue(self::CONFIG_TAX_RULE_ID, self::DEFAULT_TAX_RULE_ID)),
+            'log' => (bool) self::getConfigValue(self::CONFIG_LOG_ENABLED, false),
         ];
 
         return $config;

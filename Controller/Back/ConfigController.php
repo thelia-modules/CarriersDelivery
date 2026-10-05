@@ -35,6 +35,7 @@ class ConfigController extends BaseAdminController
                 $dataForm = $this->validateForm($form, 'POST');
 
                 CarriersDelivery::setConfigValue(CarriersDelivery::CONFIG_TAX_RULE_ID, $dataForm->get('tax')->getData());
+                CarriersDelivery::setConfigValue(CarriersDelivery::CONFIG_LOG_ENABLED, $dataForm->get('log')->getData() ? 1 : 0);
 
                 $this->getSession()->getFlashBag()->add(
                     'success',
@@ -66,6 +67,7 @@ class ConfigController extends BaseAdminController
             'config_form' => $form->getForm()->createView(),
             'tax_rules' => $taxRules,
             'current_tax' => $config['tax'],
+            'current_log' => $config['log'],
         ]);
     }
 
