@@ -18,7 +18,7 @@ class CarrierCreateForm extends BaseForm
     /**
      * @return string
      */
-    public function getName(): string
+    public static function getName(): string
     {
         return 'carriersdelivery_carrier_create';
     }

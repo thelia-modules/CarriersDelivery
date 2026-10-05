@@ -14,7 +14,7 @@ class CarrierEditForm extends CarrierCreateForm
     /**
      * @return string
      */
-    public function getName(): string
+    public static function getName(): string
     {
         return 'carriersdelivery_carrier_edit';
     }

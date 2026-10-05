@@ -17,7 +17,7 @@ class PackingcostCreateForm extends BaseForm
     /**
      * @return string
      */
-    public function getName(): string
+    public static function getName(): string
     {
         return 'carriersdelivery_packingcost_create';
     }
