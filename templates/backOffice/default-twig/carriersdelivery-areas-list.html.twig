@@ -303,7 +303,8 @@
                         <h5 class="modal-title">{{ 'Delete this area'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.area.delete') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.area.delete') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to delete this area?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="area_id" id="carriersdelivery-area-delete-id" value="">
@@ -389,7 +390,8 @@
                         <h5 class="modal-title">{{ 'Delete this weight slice'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.delete') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.delete') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to delete this weight slice?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
@@ -411,7 +413,8 @@
                         <h5 class="modal-title">{{ 'Delete this weight slice'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.delete') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.delete') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to delete this weight slice?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
@@ -436,7 +439,8 @@
                         <h5 class="modal-title">{{ 'Update this table costs'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.update') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacost.update') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to update this table?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="carrier_id" value="{{ carrier_id }}">
@@ -458,7 +462,8 @@
                         <h5 class="modal-title">{{ 'Update this table costs'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.update') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.areacostkg.update') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to update this table?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="carrier_id" value="{{ carrier_id }}">

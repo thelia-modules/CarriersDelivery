@@ -183,6 +183,8 @@ class CarrierController extends BaseAdminController
             return $response;
         }
 
+        $this->getTokenProvider()->checkToken((string) $this->getRequest()->request->get('_token'));
+
         try {
             $carrier_id = $this->getRequest()->request->get('carrier_id');
 

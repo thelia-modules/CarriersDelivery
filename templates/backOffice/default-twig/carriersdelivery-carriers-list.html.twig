@@ -163,7 +163,8 @@
                         <h5 class="modal-title">{{ 'Delete this carrier'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.carrier.delete') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.carrier.delete') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to delete this carrier?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="carrier_id" id="carriersdelivery-carrier-delete-id" value="">

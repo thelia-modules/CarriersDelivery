@@ -88,7 +88,8 @@
                         <h5 class="modal-title">{{ 'Delete this packing cost'|trans({}, 'carriersdelivery.bo.default') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ path('carriersdelivery.admin.packingcost.delete') }}?_token={{ assignToken() }}">
+                    <form method="POST" action="{{ path('carriersdelivery.admin.packingcost.delete') }}">
+                        <input type="hidden" name="_token" value="{{ assignToken() }}">
                         <div class="modal-body">
                             <p>{{ 'Do you really want to delete this packing cost?'|trans({}, 'carriersdelivery.bo.default') }}</p>
                             <input type="hidden" name="packingcost_id" id="carriersdelivery-packingcost-delete-id" value="">
