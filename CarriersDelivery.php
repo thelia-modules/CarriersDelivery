@@ -46,6 +46,7 @@ class CarriersDelivery extends AbstractDeliveryModule
     const CONFIG_TRACKING_URL = 'carriersdelivery_tracking_url';
     const CONFIG_TAX_RULE_ID = 'carriersdelivery_taxe_rule';
     const CONFIG_LOG_ENABLED = 'carriersdelivery_log_enabled';
+    const GEONAMES_TIMEOUT = 3;
     const DEFAULT_TRACKING_URL = '%ID%';
     const DEFAULT_TAX_RULE_ID = 0;
 
@@ -317,18 +318,35 @@ class CarriersDelivery extends AbstractDeliveryModule
      */
     public function getDepartmentForAddress(Address $address)
     {
+        $username = (string) ZipCode::getConfigValue('geonames_username');
+
+        if ('' === $username) {
+            throw new \Exception(__FUNCTION__ . ' / No GeoNames username configured');
+        }
+
         $countryIsoalpha2 = $address->getCountry()->getIsoalpha2();
 
         $data = [
             'country' => $countryIsoalpha2,
             'maxRows' => 10,
             'postalcode' => $address->getZipcode(),
-            'username' => ZipCode::getConfigValue('geonames_username'),
+            'username' => $username,
         ];
 
-        $baseUrl = 'https://secure.geonames.org/postalCodeSearchJSON?' . http_build_query($data);
+        $baseUrl = 'https://secure.geonames.org/postalCodeSearchJSON?' . http_build_query($data, '', '&');
 
-        $jsonResponse = file_get_contents($baseUrl);
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => self::GEONAMES_TIMEOUT,
+                'ignore_errors' => true,
+            ],
+        ]);
+
+        $jsonResponse = @file_get_contents($baseUrl, false, $context);
+
+        if (false === $jsonResponse) {
+            throw new \Exception(__FUNCTION__ . ' / GeoNames is unreachable');
+        }
 
         // Tlog::getInstance()->error(print_r($jsonResponse, true));
 
