@@ -115,7 +115,9 @@ class AreaController extends BaseAdminController
             $this->setupFormErrorContext(get_class($form), $e->getMessage(), $form, $e);
         }
 
-        return $this->listAction();
+        $carrierId = (int) ($this->getRequest()->request->all(AreaCreateForm::getName())['carrier_id'] ?? 0);
+
+        return $this->listAction($carrierId);
     }
 
     /**
